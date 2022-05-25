@@ -69,9 +69,9 @@ def check_url(url):
     try:
         request = Request(url)
         request.get_method = lambda: 'HEAD'
-        response = urlopen(request)
+        urlopen(request)
         return True
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -145,3 +145,4 @@ if __name__ == "__main__":
                 download_file(url, filename)
                 if extract:
                     extract_tgz(filename, output_directory)
+                os.rename(output_directory + '/' + object, output_directory + '/ycb-' + object)

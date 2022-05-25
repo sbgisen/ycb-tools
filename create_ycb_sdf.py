@@ -6,13 +6,13 @@ import numpy as np
 """
 Creates Gazebo compatible SDF files from downloaded YCB data.
 
-This looks through all the YCB objects you have downloaded in a particular 
+This looks through all the YCB objects you have downloaded in a particular
 folder, and creates Gazebo compatible SDF files from a set of templates.
 
 If the object has google_16k meshes downloaded, it will use those; else, it
-will use the tsdf meshes which are of lower quality. 
+will use the tsdf meshes which are of lower quality.
 
-We recommend ensuring that you've enabled `google_16k` as one of the file 
+We recommend ensuring that you've enabled `google_16k` as one of the file
 types to download in the `download_ycb_dataset.py` script.
 
 Sebastian Castro 2020-2021
@@ -22,7 +22,7 @@ Sebastian Castro 2020-2021
 default_ycb_folder = os.path.join("models", "ycb")
 default_template_folder = os.path.join("templates", "ycb")
 
-if __name__=="__main__":
+if __name__ == "__main__":
 
     print("Creating files to use YCB objects in Gazebo...")
 
@@ -44,22 +44,23 @@ if __name__=="__main__":
     config_template_file = os.path.join(args.template_folder, "model.config")
     model_template_file = os.path.join(args.template_folder, "template.sdf")
     material_template_file = os.path.join(args.template_folder, "template.material")
-    with open(config_template_file,"r") as f:
+    with open(config_template_file, "r") as f:
         config_template_text = f.read()
-    with open(model_template_file,"r") as f:
+    with open(model_template_file, "r") as f:
         model_template_text = f.read()
-    with open(material_template_file,"r") as f:
+    with open(material_template_file, "r") as f:
         material_template_text = f.read()
 
     # Now loop through all the folders
     for folder in folder_names:
-        if folder != "template":
+        if folder.startswith('ycb-'):
             try:
                 print("Creating Gazebo files for {} ...".format(folder))
 
                 # Extract model name and folder
                 model_long = folder
-                model_short = folder[4:]
+                # model_short = folder[4:]
+                model_short = folder
                 model_folder = os.path.join(args.ycb_folder, model_long)
 
                 # Check if there are Google meshes; else use the TSDF folder
@@ -86,7 +87,7 @@ if __name__=="__main__":
                 com_text = com_text.replace("[", "")
                 com_text = com_text.replace("]", "")
                 com_text = com_text.replace(",", "")
-                
+
                 # Create a downsampled mesh file with a subset of vertices and faces
                 if args.downsample_ratio < 1:
                     mesh_pts = mesh.vertices.shape[0]
@@ -103,7 +104,7 @@ if __name__=="__main__":
                 config_text = config_template_text.replace("$MODEL_SHORT", model_short)
                 with open(os.path.join(model_folder, "model.config"), "w") as f:
                     f.write(config_text)
-            
+
                 # Copy and modify the model file template
                 model_text = model_template_text.replace("$MODEL_SHORT", model_short)
                 model_text = model_text.replace("$MODEL_LONG", model_long)
@@ -132,7 +133,7 @@ if __name__=="__main__":
                 with open(os.path.join(model_folder, model_short + ".material"), "w") as f:
                     f.write(material_text)
 
-            except:
+            except BaseException:
                 print("Error processing {}. Textured mesh likely does not exist for this object.".format(folder))
 
     print("Done.")
