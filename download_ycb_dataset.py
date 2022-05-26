@@ -131,7 +131,7 @@ if __name__ == "__main__":
     # Download each object for all objects and types specified
     for object in objects:
         if objects_to_download == "all" or object in objects_to_download:
-            if os.path.exists(os.path.join(output_directory, object)):
+            if os.path.exists(os.path.join(output_directory, 'ycb-' + object)):
                 print("{} found, skipping download".format(object))
                 continue
             for file_type in files_to_download:
