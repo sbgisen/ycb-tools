@@ -78,7 +78,7 @@ def check_url(url):
 if __name__ == "__main__":
     # Parse arguments
     parser = argparse.ArgumentParser(description="YCB model downloader")
-    parser.add_argument("--output-directory", type=str, default="models/ycb",
+    parser.add_argument("--output-directory", type=str, default="models/",
                         help="Location to place downloaded files")
     parser.add_argument("--objects", nargs="+", default="all",
                         help="List of object name to download")
@@ -145,4 +145,5 @@ if __name__ == "__main__":
                 download_file(url, filename)
                 if extract:
                     extract_tgz(filename, output_directory)
-                os.rename(output_directory + '/' + object, output_directory + '/ycb-' + object)
+            if os.path.exists(os.path.join(output_directory, object)):
+                os.rename(os.path.join(output_directory, object), os.path.join(output_directory, 'ycb-' + object))
